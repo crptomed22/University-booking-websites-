@@ -934,7 +934,7 @@
                 try {
                     const prompt = `Expand the following meeting purpose into a formal and detailed request suitable for a university president's office. The original purpose is: "${userPurpose}". The expanded version should be polite, clear, and concise. Do not add any introductory phrases. Just provide the refined text.`;
                     const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                    const apiKey = ""; 
+                    const apiKey = "AIzaSyA4iGbRom-1fXrqSRJMQvN_GOWbm3d_J5A"; 
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                     const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                     if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
