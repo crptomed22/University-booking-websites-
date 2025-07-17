@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University of Hargeisa - Leadership Booking (AI-Powered)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .loader {
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #047857;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .typewriter-cursor {
+            display: inline-block;
+            border-right: 4px solid #1f2937;
+            animation: blink 1s step-end infinite;
+            height: 1em;
+            vertical-align: middle;
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: currentColor; }
+        }
+        #scroll-to-top {
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* --- Video Background --- */
+        #video-background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+        #bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: auto;
+            min-width: 100%;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
+        }
+        #video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Dark overlay for text readability */
+            z-index: -1;
+        }
+        .title-font {
+            font-family: 'Great Vibes', cursive;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+        .subtitle-font {
+            font-family: 'Cinzel Decorative', cursive;
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div id="video-background-container">
+        <div id="video-overlay"></div>
+        <video autoplay muted loop id="bg-video">
+            <source src="Office Video  People Working As A Team  Group Meeting  Business  Free Stock Footage - Simply Creative Commons Video (1080p, h264).mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <nav class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <img class="h-16 w-16 rounded-full object-cover" src="University_of_Hargeisa.svg.png" alt="University of Hargeisa Logo" onerror="this.onerror=null;this.src='https://placehold.co/64x64/047857/FFFFFF?text=UoH';">
+                </div>
+
+                <div class="hidden md:flex flex-1 justify-center">
+                    <div class="flex items-center space-x-8">
+                        <a href="#home" class="nav-link text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#request" class="nav-link text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Request Meeting</a>
+                        <a href="#leadership" class="nav-link text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Leadership</a>
+                        <a href="#faq" class="nav-link text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">FAQ</a>
+                        <a href="#status" class="nav-link text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Check Status</a>
+                        <a href="#contact" class="nav-link text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <!-- Login/Profile Section -->
+                    <div id="nav-auth-section" class="flex items-center ml-4">
+                        <!-- Logged Out State -->
+                        <button id="nav-login-button" class="nav-link inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                           <i class="fas fa-sign-in-alt mr-2"></i> Login
+                        </button>
+                        <!-- Logged In State (initially hidden) -->
+                        <div id="nav-user-profile" class="hidden items-center">
+                              <span id="nav-username" class="text-gray-800 mr-4 text-sm font-medium"></span>
+                              <button id="nav-logout-button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
+                                  <i class="fas fa-sign-out-alt"></i>
+                              </button>
+                        </div>
+                    </div>
+                    <div class="-mr-2 flex md:hidden">
+                        <button type="button" class="bg-transparent inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                            <span class="sr-only">Open main menu</span>
+                            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#request" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">Request Meeting</a>
+                <a href="#leadership" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">Leadership</a>
+                <a href="#faq" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
+                <a href="#status" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">Check Status</a>
+                <a href="#admin-login" id="admin-mobile-nav-link" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">Admin Login</a>
+                <a href="#contact" class="nav-link text-gray-600 hover:text-blue-500 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative flex items-center justify-center h-screen" id="home">
+        <div class="relative z-10 text-center p-5 text-white">
+             <h1 class="title-font text-5xl sm:text-7xl md:text-8xl">
+                 <span class="block text-white">University of Hargeisa</span>
+                 <span id="hero-title" class="block bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-cyan-400 to-purple-400 min-h-[1.2em] drop-shadow-lg"></span>
+             </h1>
+             <p id="hero-subtitle" class="subtitle-font mt-4 max-w-md mx-auto text-gray-200 sm:text-lg md:mt-6 md:text-xl md:max-w-3xl"></p>
+             <div id="hero-buttons" class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8 opacity-0 transition-opacity duration-1000">
+                 <div class="rounded-md shadow">
+                     <a href="#request" class="w-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+                         Request Appointment
+                     </a>
+                 </div>
+                  <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+                     <a href="#faq" class="w-full flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10">
+                          View FAQ
+                     </a>
+                 </div>
+             </div>
+        </div>
+    </header>
+
+    <main class="py-16 fade-in-section" id="request">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white p-8 rounded-2xl shadow-2xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-extrabold text-gray-900">Request an Appointment</h2>
+                    <p class="mt-2 text-gray-600">Please fill out the form below. Fields marked with * are required.</p>
+                </div>
+                <form id="appointment-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="full-name" class="block text-sm font-medium text-gray-700">Full Name *</label>
+                            <input type="text" name="full-name" id="full-name" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                        </div>
+                        <div>
+                            <label for="department" class="block text-sm font-medium text-gray-700">Select Office *</label>
+                            <select id="department" name="department" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="president">President's Office</option>
+                                <option value="academic">VP for Academic and Research</option>
+                                <option value="finance">VP for Administration and Finance</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="relationship" class="block text-sm font-medium text-gray-700">Relationship to University *</label>
+                            <select id="relationship" name="relationship" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Select your relationship</option>
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="guest">Visitor/Guest</option>
+                            </select>
+                        </div>
+                        <div id="university-id-container" class="hidden">
+                            <label for="university-id" class="block text-sm font-medium text-gray-700">Student/Staff ID *</label>
+                            <input type="text" name="university-id" id="university-id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address *</label>
+                            <input type="email" name="email" id="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <input type="tel" name="phone" id="phone" placeholder="+252..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="purpose" class="block text-sm font-medium text-gray-700">Purpose of Meeting *</label>
+                        <div class="relative">
+                            <textarea id="purpose" name="purpose" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm pr-32 bg-gray-50 text-gray-900"></textarea>
+                            <button type="button" id="ai-assist-button" class="absolute top-2 right-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <span id="ai-button-text">✨ AI Assist</span>
+                                <div id="ai-loader" class="loader hidden ml-2"></div>
+                            </button>
+                        </div>
+                         <p class="mt-2 text-xs text-gray-500">Briefly state your purpose, then click "AI Assist" to refine it.</p>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="date" class="block text-sm font-medium text-gray-700">Preferred Date *</label>
+                            <input type="date" name="date" id="date" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                        </div>
+                        <div>
+                            <label for="time-slot" class="block text-sm font-medium text-gray-700">Preferred Time Slot *</label>
+                            <div class="flex items-center gap-2">
+                                <select id="time-slot" name="time-slot" required class="flex-grow mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50 text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="">Select a time or use AI Suggest</option>
+                                    <option>09:00 AM - 09:30 AM</option>
+                                    <option>10:00 AM - 10:30 AM</option>
+                                    <option>11:00 AM - 11:30 AM</option>
+                                    <option>02:00 PM - 02:30 PM</option>
+                                    <option>03:00 PM - 03:30 PM</option>
+                                </select>
+                                <button type="button" id="ai-time-suggest-button" class="mt-1 h-10 px-3 inline-flex items-center text-white bg-purple-600 hover:bg-purple-700 rounded-md shadow-sm">
+                                    <span class="text-sm">✨ Suggest</span>
+                                </button>
+                            </div>
+                             <div id="time-slot-loader" class="hidden flex items-center mt-2">
+                                 <div class="loader" style="width:16px; height:16px;"></div>
+                                 <p class="ml-2 text-xs text-gray-500">Finding available slots...</p>
+                             </div>
+                        </div>
+                    </div>
+                     <div>
+                         <label for="attachment-label" class="block text-sm font-medium text-gray-700">Attach File (Optional)</label>
+                         <input type="file" id="attachment-input" class="hidden"/>
+                         <label for="attachment-input" id="attachment-label" class="mt-1 cursor-pointer w-full flex items-center justify-center px-4 py-2 border-2 border-dashed border-gray-400 rounded-md text-sm font-medium text-gray-500 bg-transparent hover:bg-gray-100">
+                             <i class="fas fa-paperclip mr-2"></i>
+                             <span id="attachment-text">Attach a file</span>
+                         </label>
+                         <p class="text-xs text-gray-500 mt-1">Note: The file itself is not uploaded in this demo, only the filename is saved.</p>
+                     </div>
+                    <div class="pt-5">
+                        <div class="flex justify-end">
+                            <button type="submit" id="submit-request-button" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:w-auto">
+                                <span id="submit-button-text">Submit Request</span>
+                                <div id="submit-loader" class="loader hidden ml-2"></div>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <section class="py-16 fade-in-section" id="leadership">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">University Leadership</h2>
+                <p class="mt-4 text-lg text-gray-600">Meet the team dedicated to guiding our university to a better future.</p>
+            </div>
+            <div id="leadership-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Leadership cards will be injected here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 fade-in-section" id="faq">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">Frequently Asked Questions</h2>
+                <p class="mt-4 text-lg text-gray-600">Have questions? We've got answers.</p>
+            </div>
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <details class="bg-white p-4 rounded-lg group shadow">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+                        <span class="text-gray-900">Who can I request a meeting with?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-3">
+                        You can request meetings with the President's Office, the Vice President for Academic and Research, and the Vice President for Administration and Finance directly through the form on this portal.
+                    </p>
+                </details>
+                <!-- FAQ Item 2 -->
+                <details class="bg-white p-4 rounded-lg group shadow">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+                        <span class="text-gray-900">How long does it take for a request to be approved?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-3">
+                        Approval times can vary depending on the urgency of the request and the availability of the leadership. You can check the status of your request at any time using the "Check Status" section on this page. Typically, you can expect a response within 3-5 business days.
+                    </p>
+                </details>
+                <!-- FAQ Item 3 -->
+                <details class="bg-white p-4 rounded-lg group shadow">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+                        <span class="text-gray-900">What should I include in the "Purpose of Meeting"?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-3">
+                        Please be as clear and concise as possible. State the main topic of discussion, any key decisions that need to be made, and who will be attending the meeting with you. You can use the "AI Assist" button to help refine your purpose into a more formal request.
+                    </p>
+                </details>
+                 <!-- FAQ Item 4 -->
+                <details class="bg-white p-4 rounded-lg group shadow">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+                        <span class="text-gray-900">Can I attach documents to my request?</span>
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-3">
+                        Yes, you can attach one relevant document (e.g., a proposal, report, or agenda) to your request using the file attachment field in the form. Please note that for this demo, only the filename is recorded.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 fade-in-section" id="status">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-extrabold text-gray-900">Check Your Request Status</h2>
+                    <p class="mt-2 text-gray-600">Enter your email address to see the status of your submitted requests.</p>
+                </div>
+                <form id="status-check-form" class="flex flex-col sm:flex-row gap-4">
+                    <input type="email" id="status-check-email" placeholder="Enter your email address" required class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                    <button type="submit" id="status-check-button" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <span id="status-check-button-text">Check Status</span>
+                        <div id="status-check-loader" class="loader hidden"></div>
+                    </button>
+                </form>
+                <div id="status-results-container" class="mt-8">
+                    <!-- Enhanced empty state for status check -->
+                    <div id="no-status-found" class="hidden text-center py-8 px-4">
+                        <svg class="mx-auto h-12 w-12 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">No Requests Found</h3>
+                        <p class="mt-1 text-sm text-gray-500">We couldn't find any requests associated with that email address.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 fade-in-section hidden" id="admin-login">
+        <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white p-8 rounded-2xl shadow-2xl relative">
+                <button id="close-login-button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <div class="text-center mb-8">
+                     <img src="University_of_Hargeisa.svg.png" alt="University Logo" class="mx-auto h-24 w-24 mb-4 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/96x96/FFFFFF/1F2937?text=UoH';">
+                     <p class="mt-2 text-gray-600">Enter credentials to access the dashboard.</p>
+                </div>
+                <form id="login-form" class="space-y-6" action="#" method="post">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" name="username" id="username" autocomplete="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" name="password" id="password" autocomplete="current-password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+                    </div>
+                    <div class="pt-5">
+                        <button type="submit" id="login-button" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                            <span id="login-button-text">Login</span>
+                            <div id="login-loader" class="loader hidden ml-2"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 hidden" id="admin">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">Admin Dashboard</h2>
+                <p class="mt-4 text-lg text-gray-600">Manage appointment requests for all departments.</p>
+                <p id="user-id-display" class="mt-2 text-xs text-gray-500"></p>
+            </div>
+            
+            <!-- Stats Section -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <p class="text-sm font-medium text-gray-500">Appointments Today</p>
+                    <p id="stats-today" class="text-3xl font-bold text-gray-900">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <p class="text-sm font-medium text-gray-500">Pending Requests</p>
+                    <p id="stats-pending" class="text-3xl font-bold text-gray-900">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <p class="text-sm font-medium text-gray-500">Approved Total</p>
+                    <p id="stats-approved" class="text-3xl font-bold text-gray-900">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <p class="text-sm font-medium text-gray-500">Rejected Total</p>
+                    <p id="stats-rejected" class="text-3xl font-bold text-gray-900">0</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center mb-8 gap-4">
+                <button id="show-analytics-modal-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    ✨ View Analytics
+                </button>
+                <button id="logout-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Logout
+                </button>
+            </div>
+
+            <div id="department-tabs-nav" class="mb-8 border-b border-gray-200">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button data-department="president" class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 border-transparent">
+                        President's Office
+                    </button>
+                    <button data-department="academic" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 border-transparent">
+                        Academic & Research
+                    </button>
+                    <button data-department="finance" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 border-transparent">
+                        Admin & Finance
+                    </button>
+                </nav>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 id="requests-list-title" class="text-xl font-bold text-gray-900">Incoming Requests</h3>
+                        <button id="triage-button" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <span id="triage-button-text">✨ Triage Pending</span>
+                            <div id="triage-loader" class="loader hidden ml-2" style="width:16px; height:16px;"></div>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="search-requests" class="sr-only">Search</label>
+                            <input type="search" id="search-requests" placeholder="Search by name or email..." class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900 placeholder-gray-500">
+                        </div>
+                        <div>
+                            <label for="filter-status" class="sr-only">Filter by status</label>
+                            <select id="filter-status" class="block w-full px-3 py-2 border border-gray-300 bg-gray-50 text-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="all">All Statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="requests-list" class="space-y-4">
+                        <!-- Request cards or skeletons will be injected here -->
+                    </div>
+                     <div id="pagination-controls" class="flex justify-between items-center mt-4">
+                         <button id="prev-page" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Previous</button>
+                         <span id="page-info" class="text-sm text-gray-500"></span>
+                         <button id="next-page" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Next</button>
+                     </div>
+                     <div id="no-requests-message" class="hidden text-center py-8 px-4 bg-white rounded-lg">
+                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                             <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                         </svg>
+                         <h3 class="mt-2 text-sm font-medium text-gray-900">All caught up!</h3>
+                         <p class="mt-1 text-sm text-gray-500">There are no requests matching your criteria.</p>
+                     </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <h3 class="text-xl font-bold text-gray-900">AI Analysis & Actions</h3>
+                    <div id="admin-analysis-panel" class="bg-white p-6 rounded-xl shadow-lg min-h-[300px] mt-4 sticky top-24">
+                        <div id="admin-analysis-placeholder" class="flex flex-col items-center justify-center h-full text-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M12 21v-1m0-16a9 9 0 110 18 9 9 0 010-18z" /></svg>
+                            <p class="mt-2">Select a request from the list to view details and AI-powered actions.</p>
+                        </div>
+                        <div id="admin-analysis-content" class="hidden">
+                             <!-- AI analysis content will be injected here -->
+                        </div>
+                         <div id="admin-analysis-loader" class="hidden flex items-center justify-center h-full">
+                             <div class="loader"></div>
+                             <p class="ml-4 text-gray-600">Analyzing...</p>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="analytics-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-blue-600" id="modal-title">Dashboard Analytics</h2>
+                <button id="close-analytics-modal-button" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">×</button>
+            </div>
+            <div id="analytics-content" class="mt-4">
+                <div class="text-center">
+                     <button id="generate-analytics-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                        ✨ Generate Full Report
+                    </button>
+                </div>
+                 <div id="analytics-loader" class="hidden flex items-center justify-center mt-4">
+                     <div class="loader"></div>
+                     <p class="ml-4 text-gray-600">Analyzing data...</p>
+                 </div>
+                <div id="analytics-results" class="mt-6 hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <!-- Analytics results will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="attachment-preview-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+            <button id="close-attachment-modal-button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 text-2xl font-bold">×</button>
+            <h3 id="attachment-modal-title" class="text-xl font-bold text-gray-900 mb-4">Attachment Preview</h3>
+            <div id="attachment-modal-content" class="text-center">
+                <!-- Image or AI summary will be injected here -->
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-white text-gray-600" id="contact">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-10 gap-8">
+                <div class="md:col-span-4">
+                    <div class="flex items-center mb-4">
+                        <img class="h-16 w-16 rounded-full object-cover" src="University_of_Hargeisa.svg.png" alt="University of Hargeisa Logo" onerror="this.onerror=null;this.src='https://placehold.co/64x64/FFFFFF/1F2937?text=UoH';">
+                        <h3 class="ml-4 text-xl font-bold text-gray-900">University of Hargeisa</h3>
+                    </div>
+                    <p class="text-sm uppercase font-semibold text-blue-600">TOWARDS A BETTER FUTURE!</p>
+                    <p class="mt-2 text-gray-500">Inspiring excellence, building character, and preparing you for success in a changing world.</p>
+                    <div class="mt-6 flex space-x-4">
+                        <a href="https://www.facebook.com/UofHargeisa" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://x.com/UofHargeisa" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/uoh_media" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                         <a href="https://www.linkedin.com/school/university-of-hargeisa/" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                             <i class="fab fa-linkedin-in"></i>
+                         </a>
+                         <a href="https://www.youtube.com/channel/UCiOs_D1aY-8dYDG5r_K-3fg" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                             <i class="fab fa-youtube"></i>
+                         </a>
+                    </div>
+                </div>
+                <div class="md:col-span-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Contact Us</h3>
+                    <div class="space-y-4 text-gray-600">
+                        <div>
+                            <p class="font-semibold text-gray-900">Email:</p>
+                            <a href="mailto:contact@uoh.edu.so" class="hover:text-blue-500">contact@uoh.edu.so</a>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Phone:</p>
+                            <p>(+252) - 638888120</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Address:</p>
+                            <p>UoH Road, Pepsi Area, Ahmed Dhagah District. Hargeisa, Somaliland</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-200 pt-8 text-center">
+                 <p class="text-sm text-gray-500">© 2024 University of Hargeisa. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot -->
+    <button id="ai-chat-button" class="glowing-button bg-blue fixed bottom-5 right-5 w-16 h-16 rounded-full shadow-lg flex items-center justify-center text-2xl z-50">
+        <span class="button-text-wrapper text-white"><i class="fas fa-comments"></i></span>
+    </button>
+    <div id="ai-chat-widget" class="bg-white rounded-2xl shadow-2xl flex-col hidden">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                    <i class="fas fa-robot text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900">AI Assistant</h3>
+                    <p class="text-xs text-green-400">Online</p>
+                </div>
+            </div>
+            <button id="close-chat-button" class="text-gray-400 hover:text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div id="chat-messages" class="flex-1 p-4 space-y-4 overflow-y-auto">
+            <!-- Messages will be injected here -->
+        </div>
+        <div id="chat-typing-indicator" class="hidden p-4">
+            <div class="typing-indicator"><span></span><span></span><span></span></div>
+        </div>
+        <form id="chat-form" class="p-4 border-t border-gray-200 flex items-center">
+            <input type="text" id="chat-input" placeholder="Ask a question..." class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900">
+            <button type="submit" class="ml-2 glowing-button bg-blue p-2 rounded-md">
+                <span class="button-text-wrapper text-white"><i class="fas fa-paper-plane"></i></span>
+            </button>
+        </form>
+    </div>
+
+
+    <div id="toast" class="fixed top-5 right-5 bg-blue-600 text-white py-2 px-4 rounded-lg shadow-lg hidden transition-opacity duration-300 z-50 border-2 border-white/50">
+        <p id="toast-message"></p>
+    </div>
+
+    <button id="scroll-to-top" class="glowing-button bg-blue fixed bottom-5 right-24 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-xl z-50 opacity-0 invisible">
+        <span class="button-text-wrapper text-white"><i class="fas fa-arrow-up"></i></span>
+    </button>
+    
+    <script type="module">
+        // Import Firebase modules for online data persistence
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, query, where, getDocs, limit, startAfter, endBefore, limitToLast, orderBy, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Firebase Configuration ---
+            const firebaseConfig = typeof __firebase_config !== 'undefined' 
+                ? JSON.parse(__firebase_config) 
+                : {
+                    apiKey: "YOUR_API_KEY", 
+                    authDomain: "YOUR_AUTH_DOMAIN",
+                    projectId: "YOUR_PROJECT_ID",
+                    storageBucket: "YOUR_STORAGE_BUCKET",
+                    messagingSenderId: "YOUR_SENDER_ID",
+                    appId: "YOUR_APP_ID"
+                };
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            
+            // --- Initialize Firebase ---
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+            setLogLevel('debug');
+
+            // --- App State ---
+            let currentUserId = null;
+            let triageResults = new Map();
+            let currentDepartment = 'president';
+            let allDepartmentRequests = []; 
+            let requestChart = null;
+            let isAdminLoggedIn = false;
+            
+            // --- Pagination State ---
+            const PAGE_SIZE = 5;
+            let firstVisible = null;
+            let lastVisible = null;
+            let currentPage = 1;
+            let hasNextPage = true;
+
+            // --- UI Elements ---
+            const adminLoginSection = document.getElementById('admin-login');
+            const adminSection = document.getElementById('admin');
+            const loginForm = document.getElementById('login-form');
+            const logoutButton = document.getElementById('logout-button');
+            const navLoginButton = document.getElementById('nav-login-button');
+            const navUserProfile = document.getElementById('nav-user-profile');
+            const navUsername = document.getElementById('nav-username');
+            const navLogoutButton = document.getElementById('nav-logout-button');
+            const closeLoginButton = document.getElementById('close-login-button');
+            const relationshipSelect = document.getElementById('relationship');
+            const universityIdContainer = document.getElementById('university-id-container');
+            const universityIdInput = document.getElementById('university-id');
+            const adminMobileNavLink = document.getElementById('admin-mobile-nav-link');
+            const attachmentModal = document.getElementById('attachment-preview-modal');
+            const closeAttachmentModalButton = document.getElementById('close-attachment-modal-button');
+            const attachmentModalTitle = document.getElementById('attachment-modal-title');
+            const attachmentModalContent = document.getElementById('attachment-modal-content');
+
+
+            // --- Leadership Data & Mock Calendar ---
+            const leadershipData = {
+                president: { name: 'Dr. Mohamud Yusuf Muse', title: 'President, University of Hargeisa', photoUrl: 'https://placehold.co/150x150/047857/FFFFFF?text=President', bio: 'Dr. Muse is a visionary leader dedicated to academic excellence and fostering global partnerships to elevate the university\'s standing.' },
+                academic: { name: 'Dr. Ayan Abdi', title: 'VP for Academic and Research', photoUrl: 'https://placehold.co/150x150/1d4ed8/FFFFFF?text=VP+Academic', bio: 'Dr. Abdi oversees all academic programs and research initiatives, ensuring a high-quality educational experience for all students.' },
+                finance: { name: 'Mr. Ahmed Ali', title: 'VP for Administration and Finance', photoUrl: 'https://placehold.co/150x150/7c3aed/FFFFFF?text=VP+Finance', bio: 'Mr. Ali manages the university\'s administrative and financial operations, ensuring fiscal responsibility and efficient resource management.' }
+            };
+            const presidentCalendar = {
+                "2025-07-25": ["10:00 AM - 10:30 AM", "02:30 PM - 03:00 PM"],
+                "2025-07-28": ["09:00 AM - 10:00 AM", "11:00 AM - 11:30 AM"]
+            };
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+
+            // --- Role-Based Access Control & Login ---
+            const roleHashes = {
+                '#president-d7h3-k9s1': 'president',
+                '#academic-p4j8-f2b5': 'academic',
+                '#finance-w6r2-q9c3': 'finance'
+            };
+            let userRole = null;
+            const currentHash = window.location.hash;
+
+            function showLoggedInState(username) {
+                isAdminLoggedIn = true;
+                adminLoginSection.classList.add('hidden');
+                adminSection.classList.remove('hidden');
+                
+                navLoginButton.classList.add('hidden');
+                navUserProfile.classList.remove('hidden');
+                navUserProfile.classList.add('flex');
+                navUsername.textContent = `Hi, ${username}`;
+                updateDashboardStats();
+            }
+
+            function showLoggedOutState() {
+                isAdminLoggedIn = false;
+                adminSection.classList.add('hidden');
+                adminLoginSection.classList.add('hidden'); // Ensure login form is hidden on logout
+                
+                navUserProfile.classList.add('hidden');
+                navUserProfile.classList.remove('flex');
+                navLoginButton.classList.remove('hidden');
+            }
+
+            if (roleHashes[currentHash]) {
+                userRole = roleHashes[currentHash];
+                currentDepartment = userRole; 
+
+                showLoggedInState(userRole);
+                
+                document.getElementById('department-tabs-nav')?.classList.add('hidden');
+                
+                const departmentNames = {
+                    president: "President's Office",
+                    academic: "VP Academic & Research",
+                    finance: "VP Admin & Finance"
+                };
+                
+                const adminDashboardTitle = document.querySelector('#admin h2');
+                if (adminDashboardTitle) adminDashboardTitle.textContent = `${departmentNames[userRole]} Dashboard`;
+                
+                const adminDashboardSubtitle = document.querySelector('#admin p');
+                 if (adminDashboardSubtitle) adminDashboardSubtitle.textContent = `Manage appointment requests for your department.`;
+
+                document.getElementById('requests-list-title').textContent = `${departmentNames[userRole]} Requests`;
+                
+                tabButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.department === currentDepartment));
+            } else {
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        currentDepartment = button.dataset.department;
+                        document.getElementById('requests-list-title').textContent = `${button.textContent.trim()} Requests`;
+                        resetAndFetch();
+                    });
+                });
+            }
+
+            // --- Authentication Listener ---
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUserId = user.uid;
+                    document.getElementById('user-id-display').textContent = `User ID: ${currentUserId}`;
+                }
+            });
+            
+            (async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else if (!auth.currentUser) {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Initial Authentication Error:", error);
+                }
+            })();
+
+            // --- Login/Logout Handlers ---
+            function showLoginSection(e) {
+                e.preventDefault();
+                adminLoginSection.classList.remove('hidden');
+                adminLoginSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            navLoginButton.addEventListener('click', showLoginSection);
+            adminMobileNavLink.addEventListener('click', showLoginSection);
+
+
+            closeLoginButton.addEventListener('click', () => {
+                adminLoginSection.classList.add('hidden');
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const usernameInput = document.getElementById('username');
+                const passwordInput = document.getElementById('password');
+                const loginButtonText = document.getElementById('login-button-text');
+                const loginLoader = document.getElementById('login-loader');
+
+                loginButtonText.classList.add('hidden');
+                loginLoader.classList.remove('hidden');
+
+                setTimeout(() => {
+                    if (usernameInput.value === 'admin' && passwordInput.value === 'password123') {
+                        showLoggedInState('Admin');
+                        showToast('Login successful!', 'success');
+                        adminSection.scrollIntoView({ behavior: 'smooth' });
+                        resetAndFetch();
+                    } else {
+                        showToast('Invalid username or password.', 'error');
+                    }
+                    
+                    loginButtonText.classList.remove('hidden');
+                    loginLoader.classList.add('hidden');
+                    passwordInput.value = '';
+                }, 1000);
+            });
+            
+            function handleLogout() {
+                showLoggedOutState();
+                showToast('You have been logged out.', 'success');
+                document.getElementById('username').value = '';
+                document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            logoutButton.addEventListener('click', handleLogout);
+            navLogoutButton.addEventListener('click', handleLogout);
+
+
+            // --- General UI Logic ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const svgs = mobileMenuButton.querySelectorAll('svg');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                svgs.forEach(s => s.classList.toggle('hidden'));
+            });
+            document.querySelectorAll('a.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                         if (targetId === '#admin-login') {
+                            adminLoginSection.classList.remove('hidden');
+                         }
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        svgs.forEach(s => s.classList.toggle('hidden'));
+                    }
+                });
+            });
+            const datePicker = document.getElementById('date');
+            datePicker.setAttribute('min', new Date().toISOString().split('T')[0]);
+            
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                toastMessage.textContent = message;
+                toast.className = `fixed top-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 z-50 border-2 border-white/50 ${type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
+                toast.classList.remove('hidden');
+                toast.style.opacity = '1';
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.classList.add('hidden'), 300);
+                }, 3000);
+            }
+            
+            const scrollToTopButton = document.getElementById('scroll-to-top');
+            window.addEventListener('scroll', () => {
+                const isVisible = window.pageYOffset > 300;
+                scrollToTopButton.classList.toggle('opacity-0', !isVisible);
+                scrollToTopButton.classList.toggle('invisible', !isVisible);
+            });
+            scrollToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+
+            // --- User-Facing Gemini Logic ---
+            const aiAssistButton = document.getElementById('ai-assist-button');
+            const purposeTextarea = document.getElementById('purpose');
+            aiAssistButton.addEventListener('click', async () => {
+                const userPurpose = purposeTextarea.value;
+                if (userPurpose.trim().length < 10) {
+                    showToast('Please enter a brief purpose first (at least 10 characters).', 'error');
+                    return;
+                }
+                const aiLoader = document.getElementById('ai-loader');
+                document.getElementById('ai-button-text').classList.add('hidden');
+                aiLoader.classList.remove('hidden');
+                aiAssistButton.disabled = true;
+                purposeTextarea.disabled = true;
+                try {
+                    const prompt = `Expand the following meeting purpose into a formal and detailed request suitable for a university president's office. The original purpose is: "${userPurpose}". The expanded version should be polite, clear, and concise. Do not add any introductory phrases. Just provide the refined text.`;
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = ""; 
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        purposeTextarea.value = result.candidates[0].content.parts[0].text.trim();
+                        showToast('Purpose has been refined by AI!', 'success');
+                    } else {
+                        throw new Error('Unexpected API response structure.');
+                    }
+                } catch (error) {
+                    console.error('Error with Gemini API:', error);
+                    showToast('Could not refine text. Please try again.', 'error');
+                } finally {
+                    document.getElementById('ai-button-text').classList.remove('hidden');
+                    aiLoader.classList.add('hidden');
+                    aiAssistButton.disabled = false;
+                    purposeTextarea.disabled = false;
+                }
+            });
+
+            document.getElementById('ai-time-suggest-button').addEventListener('click', async () => {
+                const selectedDate = datePicker.value;
+                if (!selectedDate) {
+                    showToast('Please select a date first.', 'error');
+                    return;
+                }
+                const timeSlotLoader = document.getElementById('time-slot-loader');
+                const aiTimeSuggestButton = document.getElementById('ai-time-suggest-button');
+                const timeSlotSelect = document.getElementById('time-slot');
+                timeSlotLoader.classList.remove('hidden');
+                aiTimeSuggestButton.disabled = true;
+                timeSlotSelect.innerHTML = '<option value="">Loading...</option>';
+
+                try {
+                    const bookedSlots = presidentCalendar[selectedDate] || [];
+                    const prompt = `A user wants to book a 30-minute meeting on ${selectedDate}. The office working hours are 9:00 AM to 12:00 PM and 2:00 PM to 5:00 PM. The currently booked slots for that day are: ${JSON.stringify(bookedSlots)}. Suggest up to 5 available 30-minute time slots. Respond with a JSON object with a single key "suggestions" which is an array of strings (e.g., ["9:00 AM - 9:30 AM", "2:30 PM - 3:00 PM"]). If no slots are available, the array should be empty.`;
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: { type: "OBJECT", properties: { "suggestions": { type: "ARRAY", items: { type: "STRING" } } }, required: ["suggestions"] }
+                        }
+                    };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+                        timeSlotSelect.innerHTML = '<option value="">Select a time</option>';
+                        if (parsedJson.suggestions && parsedJson.suggestions.length > 0) {
+                            parsedJson.suggestions.forEach(slot => {
+                                const option = document.createElement('option');
+                                option.value = slot;
+                                option.textContent = slot;
+                                timeSlotSelect.appendChild(option);
+                            });
+                            showToast('Available slots suggested by AI.', 'success');
+                        } else {
+                            timeSlotSelect.innerHTML = '<option value="">No slots available</option>';
+                            showToast('No available slots found for this date.', 'error');
+                        }
+                    } else { throw new Error('Unexpected time suggestion response.'); }
+                } catch (error) {
+                    console.error('Error with Time Suggestion Gemini API:', error);
+                    showToast('Could not suggest times. Please select manually.', 'error');
+                    timeSlotSelect.innerHTML = '<option value="">Error loading times</option>';
+                } finally {
+                    timeSlotLoader.classList.add('hidden');
+                    aiTimeSuggestButton.disabled = false;
+                }
+            });
+            
+            // --- Form Submission with Firestore ---
+            relationshipSelect.addEventListener('change', () => {
+                const selectedValue = relationshipSelect.value;
+                if (selectedValue === 'student' || selectedValue === 'teacher') {
+                    universityIdContainer.classList.remove('hidden');
+                    universityIdInput.required = true;
+                } else {
+                    universityIdContainer.classList.add('hidden');
+                    universityIdInput.required = false;
+                }
+            });
+
+            document.getElementById('appointment-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const submitButton = document.getElementById('submit-request-button');
+                const buttonWrapper = submitButton.querySelector('.button-text-wrapper');
+                
+                buttonWrapper.innerHTML = `<div class="loader"></div>`;
+                submitButton.disabled = true;
+
+                try {
+                    const department = document.getElementById('department').value;
+                    const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${department}`;
+                    const attachmentInput = document.getElementById('attachment-input');
+                    let attachedFilename = attachmentInput.files.length > 0 ? attachmentInput.files[0].name : "";
+
+                    await addDoc(collection(db, requestsCollectionPath), {
+                        name: document.getElementById('full-name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        relationship: document.getElementById('relationship').value,
+                        universityId: document.getElementById('university-id').value,
+                        purpose: document.getElementById('purpose').value,
+                        date: document.getElementById('date').value,
+                        time: document.getElementById('time-slot').value,
+                        status: 'Pending',
+                        createdAt: new Date(),
+                        adminNotes: '',
+                        attachment: attachedFilename
+                    });
+                    
+                    buttonWrapper.innerHTML = `<i class="fas fa-check"></i>`;
+                    showToast('Your appointment request has been submitted!', 'success');
+                    
+                    setTimeout(() => {
+                        this.reset();
+                        universityIdContainer.classList.add('hidden');
+                        document.getElementById('attachment-text').innerHTML = `<i class="fas fa-paperclip mr-2"></i> Attach a file`;
+                        document.getElementById('time-slot').innerHTML = '<option value="">Select a time</option>';
+                        buttonWrapper.innerHTML = `<span id="submit-button-text">Submit Request</span><div id="submit-loader" class="loader hidden ml-2"></div>`;
+                        submitButton.disabled = false;
+                    }, 2000);
+
+                } catch (error) {
+                    console.error("Error adding document: ", error);
+                    showToast('Failed to submit request. Please try again.', 'error');
+                    buttonWrapper.innerHTML = `<span id="submit-button-text">Submit Request</span><div id="submit-loader" class="loader hidden ml-2"></div>`;
+                    submitButton.disabled = false;
+                }
+            });
+            
+             document.getElementById('attachment-input').addEventListener('change', (e) => {
+                const attachmentText = document.getElementById('attachment-text');
+                if (e.target.files.length > 0) {
+                    attachmentText.textContent = e.target.files[0].name;
+                } else {
+                    attachmentText.innerHTML = `<i class="fas fa-paperclip mr-2"></i> Attach a file`;
+                }
+            });
+
+            // --- Admin Dashboard Logic ---
+            const requestsList = document.getElementById('requests-list');
+            const noRequestsMessage = document.getElementById('no-requests-message');
+            const analysisPlaceholder = document.getElementById('admin-analysis-placeholder');
+            const analysisContent = document.getElementById('admin-analysis-content');
+            const analysisLoader = document.getElementById('admin-analysis-loader');
+
+            function createSkeletonCard() {
+                return `
+                    <div class="skeleton-card space-y-3">
+                        <div class="flex justify-between">
+                            <div class="skeleton-line w-1/2"></div>
+                            <div class="skeleton-line w-1/4"></div>
+                        </div>
+                        <div class="skeleton-line w-3/4"></div>
+                        <div class="skeleton-line w-full"></div>
+                        <div class="skeleton-line w-5/6"></div>
+                    </div>
+                `;
+            }
+
+            function showSkeletonLoaders() {
+                requestsList.innerHTML = '';
+                for (let i = 0; i < 3; i++) {
+                    requestsList.innerHTML += createSkeletonCard();
+                }
+                noRequestsMessage.classList.add('hidden');
+                document.getElementById('pagination-controls').classList.add('hidden');
+            }
+
+            function createRequestCard(request) {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-xl shadow-lg hover:shadow-2xl hover:ring-2 hover:ring-blue-500/50 transition-all duration-300 cursor-pointer';
+                card.dataset.id = request.id;
+
+                const statusColors = {
+                    Pending: 'text-yellow-800 bg-yellow-100',
+                    Accepted: 'text-green-800 bg-green-100',
+                    Rejected: 'text-red-800 bg-red-100',
+                    Completed: 'text-blue-800 bg-blue-100'
+                };
+                const priorityInfo = triageResults.get(request.id);
+                const priorityColors = { High: 'bg-red-500', Medium: 'bg-yellow-500', Low: 'bg-blue-500' };
+
+                let actionButtonHtml = '';
+                if (request.status === 'Accepted') {
+                    actionButtonHtml = `<button data-action="complete" class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Mark as Completed</button>`;
+                } else if (request.status === 'Completed') {
+                     actionButtonHtml = `<button data-action="followup" class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">✨ Draft Follow-up</button>`;
+                }
+
+                let attachmentHtml = '';
+                if (request.attachment) {
+                    let iconClass = 'fa-file'; // default icon
+                    const extension = request.attachment.split('.').pop().toLowerCase();
+                    if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
+                        iconClass = 'fa-file-image';
+                    } else if (extension === 'pdf') {
+                        iconClass = 'fa-file-pdf';
+                    } else if (['doc', 'docx'].includes(extension)) {
+                        iconClass = 'fa-file-word';
+                    }
+
+                    attachmentHtml = `
+                        <div class="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-500 flex items-center">
+                            <i class="fas ${iconClass} mr-2"></i>
+                            <span class="truncate flex-grow">${request.attachment}</span>
+                            <button data-action="view-attachment" class="ml-auto text-blue-500 hover:underline text-xs font-semibold">View</button>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-grow">
+                            <p class="font-semibold text-gray-900">${request.name}</p>
+                            <p class="text-sm text-gray-600 capitalize">${request.relationship || ''} ${request.universityId ? `(${request.universityId})` : ''}</p>
+                            <p class="text-sm text-gray-600">${request.email}</p>
+                            ${request.phone ? `<p class="text-sm text-gray-600">${request.phone}</p>` : ''}
+                            <p class="text-sm text-gray-600 mt-1">${request.date}, ${request.time}</p>
+                        </div>
+                        <div class="flex flex-col items-end space-y-2">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full ${statusColors[request.status] || ''}">${request.status}</span>
+                            ${priorityInfo ? `<span class="relative px-2 py-1 text-xs font-medium text-white rounded-full ${priorityColors[priorityInfo.priority]}" data-tooltip="${priorityInfo.notes}">✨ ${priorityInfo.priority}</span>` : ''}
+                        </div>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-800 line-clamp-2">${request.purpose}</p>
+                    ${attachmentHtml}
+                    <div class="mt-4 flex space-x-2">${actionButtonHtml}</div>
+                `;
+                
+                card.addEventListener('click', () => handleAdminAnalyze(card, request));
+                
+                const viewButton = card.querySelector('[data-action="view-attachment"]');
+                if (viewButton) {
+                    viewButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        handleAttachmentPreview(request);
+                    });
+                }
+
+                card.querySelector('[data-action="complete"]')?.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    updateRequestStatus('Completed', request.id);
+                });
+                
+                card.querySelector('[data-action="followup"]')?.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleFollowUp(request);
+                });
+
+                return card;
+            }
+
+            function renderRequests(requests) {
+                const searchTerm = document.getElementById('search-requests').value.toLowerCase();
+                const statusFilter = document.getElementById('filter-status').value;
+
+                let filteredRequests = requests.filter(req => 
+                    (req.name.toLowerCase().includes(searchTerm) || req.email.toLowerCase().includes(searchTerm)) &&
+                    (statusFilter === 'all' || req.status === statusFilter)
+                );
+
+                requestsList.innerHTML = '';
+                if (filteredRequests.length === 0) {
+                    noRequestsMessage.classList.remove('hidden');
+                    document.getElementById('pagination-controls').classList.add('hidden');
+                } else {
+                    noRequestsMessage.classList.add('hidden');
+                    document.getElementById('pagination-controls').classList.remove('hidden');
+                    filteredRequests.forEach(request => {
+                        const card = createRequestCard(request);
+                        requestsList.appendChild(card);
+                    });
+                }
+            }
+
+            async function fetchAndRenderRequests(direction = 'first') {
+                if (!isAdminLoggedIn) return;
+                
+                showSkeletonLoaders();
+
+                const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${currentDepartment}`;
+                let q = query(collection(db, requestsCollectionPath), orderBy("createdAt", "desc"));
+
+                switch(direction) {
+                    case 'next':
+                        q = query(q, startAfter(lastVisible), limit(PAGE_SIZE));
+                        break;
+                    case 'prev':
+                        q = query(q, endBefore(firstVisible), limitToLast(PAGE_SIZE));
+                        break;
+                    default: // 'first'
+                        q = query(q, limit(PAGE_SIZE));
+                        break;
+                }
+
+                try {
+                    const querySnapshot = await getDocs(q);
+                    const newRequests = [];
+                    querySnapshot.forEach((doc) => newRequests.push({ id: doc.id, ...doc.data() }));
+
+                    if (direction === 'prev') newRequests.reverse();
+
+                    allDepartmentRequests = newRequests;
+                    
+                    if (querySnapshot.docs.length > 0) {
+                        firstVisible = querySnapshot.docs[0];
+                        lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+                    }
+                    
+                    hasNextPage = querySnapshot.size === PAGE_SIZE;
+
+                    renderRequests(allDepartmentRequests);
+                    updatePaginationControls();
+
+                } catch (error) {
+                    console.error("Error fetching requests:", error);
+                    showToast("Error fetching requests.", "error");
+                    requestsList.innerHTML = '';
+                    noRequestsMessage.classList.remove('hidden');
+                }
+            }
+            
+            function updatePaginationControls() {
+                document.getElementById('prev-page').disabled = currentPage === 1;
+                document.getElementById('next-page').disabled = !hasNextPage;
+                document.getElementById('page-info').textContent = `Page ${currentPage}`;
+            }
+            
+            function resetAndFetch() {
+                currentPage = 1;
+                firstVisible = null;
+                lastVisible = null;
+                allDepartmentRequests = [];
+                fetchAndRenderRequests('first');
+                resetAdminPanel();
+                updateDashboardStats();
+            }
+
+            document.getElementById('next-page').addEventListener('click', () => {
+                if (!document.getElementById('next-page').disabled) {
+                    currentPage++;
+                    fetchAndRenderRequests('next');
+                }
+            });
+            
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (!document.getElementById('prev-page').disabled) {
+                    currentPage--;
+                    fetchAndRenderRequests('prev');
+                }
+            });
+
+            document.getElementById('search-requests').addEventListener('input', () => renderRequests(allDepartmentRequests));
+            document.getElementById('filter-status').addEventListener('change', () => renderRequests(allDepartmentRequests));
+
+            async function handleAdminAnalyze(card, requestData) {
+                document.querySelectorAll('#requests-list > div').forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
+                card.classList.add('ring-2', 'ring-blue-500');
+
+                resetAdminPanel();
+                analysisLoader.classList.remove('hidden');
+
+                try {
+                    const prompt = `Analyze this meeting request for a University President and provide a JSON response.
+                    Request: { "name": "${requestData.name}", "email": "${requestData.email}", "phone": "${requestData.phone || 'N/A'}", "relationship": "${requestData.relationship}", "universityId": "${requestData.universityId || 'N/A'}", "datetime": "${requestData.date}, ${requestData.time}", "purpose": "${requestData.purpose}" }
+                    Provide: 1. "summary": A 2-3 sentence summary. 2. "acceptance_email": A formal acceptance email draft. 3. "rejection_email": A polite rejection email draft, suggesting an alternative office if appropriate.`;
+
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: { type: "OBJECT", properties: { "summary": { "type": "STRING" }, "acceptance_email": { "type": "STRING" }, "rejection_email": { "type": "STRING" } }, required: ["summary", "acceptance_email", "rejection_email"] }
+                        }
+                    };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+                        const leader = leadershipData[currentDepartment];
+                        
+                        const leaderProfileHtml = `
+                            <div class="flex items-center p-4 mb-6 bg-gray-100 rounded-lg border border-gray-200">
+                                <img src="${leader.photoUrl}" alt="${leader.name}" class="w-20 h-20 rounded-full object-cover mr-4 border-2 border-blue-400">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">${leader.name}</h3>
+                                    <p class="text-md text-blue-600">${leader.title}</p>
+                                </div>
+                            </div>
+                        `;
+
+                        analysisContent.innerHTML = leaderProfileHtml + `
+                            <div id="scheduling-container"></div>
+                            <h4>Request Summary</h4>
+                            <p>${parsedJson.summary}</p>
+                            <div id="stakeholder-container" class="mt-4"></div>
+                            <div id="agenda-container" class="mt-4"></div>
+                            
+                            <div id="admin-notes-container" class="mt-4">
+                                <h4>Admin Notes (Private)</h4>
+                                <textarea id="admin-notes-textarea" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900 placeholder-gray-500" placeholder="Add private notes here...">${requestData.adminNotes || ''}</textarea>
+                                <button id="save-notes-button" class="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
+                                    Save Notes
+                                </button>
+                            </div>
+
+                            <h4>Draft: Acceptance Email</h4>
+                            <p>${parsedJson.acceptance_email.replace(/\n/g, '<br>')}</p>
+                            <h4>Draft: Rejection Email</h4>
+                            <p>${parsedJson.rejection_email.replace(/\n/g, '<br>')}</p>
+                            <div id="prep-briefing-container" class="mt-4"></div>
+                            <div class="mt-6 flex justify-between items-center flex-wrap gap-4">
+                                <div class="flex flex-wrap gap-2">
+                                    <button id="generate-briefing-button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                                        ✨ Prep Briefing
+                                    </button>
+                                    <button id="identify-stakeholders-button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700">
+                                        ✨ Stakeholders & Delegation
+                                    </button>
+                                    <button id="generate-agenda-button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                                        ✨ Generate Agenda
+                                    </button>
+                                </div>
+                                 <div class="flex space-x-3">
+                                     <button id="deny-button" class="text-white font-bold py-2 px-4 rounded-lg bg-red-600 hover:bg-red-700">
+                                         Deny
+                                     </button>
+                                     <button id="accept-button" class="text-white font-bold py-2 px-4 rounded-lg bg-green-600 hover:bg-green-700">
+                                         Accept
+                                     </button>
+                                 </div>
+                            </div>
+                        `;
+                        document.getElementById('accept-button').addEventListener('click', () => updateRequestStatus('Accepted', requestData.id));
+                        document.getElementById('deny-button').addEventListener('click', () => updateRequestStatus('Rejected', requestData.id));
+                        document.getElementById('generate-briefing-button').addEventListener('click', (e) => handleGenerateBriefing(e, requestData));
+                        document.getElementById('identify-stakeholders-button').addEventListener('click', (e) => handleIdentifyStakeholders(e, requestData));
+                        document.getElementById('generate-agenda-button').addEventListener('click', (e) => handleGenerateAgenda(e, requestData));
+                        document.getElementById('save-notes-button').addEventListener('click', () => saveAdminNotes(requestData.id));
+
+
+                        analysisPlaceholder.classList.add('hidden');
+                        analysisContent.classList.remove('hidden');
+                        analysisLoader.classList.add('hidden');
+                        showToast('Analysis complete!', 'success');
+                        handleScheduleCheck(requestData);
+                    } else {
+                        throw new Error('Unexpected API response structure.');
+                    }
+                } catch (error) {
+                    console.error('Error with Admin Gemini API:', error);
+                    showToast('Could not analyze the request. Please check the console for details.', 'error');
+                    resetAdminPanel(); // Go back to placeholder on error
+                }
+            }
+
+            async function saveAdminNotes(requestId) {
+                const notesTextarea = document.getElementById('admin-notes-textarea');
+                const notes = notesTextarea.value;
+                const requestDocRef = doc(db, `/artifacts/${appId}/public/data/requests_${currentDepartment}`, requestId);
+                try {
+                    await updateDoc(requestDocRef, { adminNotes: notes });
+                    showToast('Notes saved successfully!', 'success');
+                    resetAndFetch(); // Refresh list to show icon
+                } catch (error) {
+                    console.error("Error saving notes:", error);
+                    showToast('Failed to save notes.', 'error');
+                }
+            }
+
+            async function handleScheduleCheck(requestData) {
+                const container = document.getElementById('scheduling-container');
+                container.innerHTML = `<div class="flex items-center mt-2"><div class="loader" style="width:16px; height:16px;"></div><p class="ml-2 text-sm">Checking calendar...</p></div>`;
+                
+                const bookedSlots = presidentCalendar[requestData.date] || [];
+                
+                try {
+                     const prompt = `A meeting is requested for ${requestData.date} at ${requestData.time}. The President's currently booked slots for that day are: ${JSON.stringify(bookedSlots)}. Working hours are 9:00 AM to 12:00 PM and 2:00 PM to 5:00 PM. First, state if the requested time of ${requestData.time} creates a conflict. Second, if there is a conflict, suggest exactly three alternative 30-minute slots on the same day that are not booked and are within working hours. Provide the answer as a JSON object with two keys: "conflict" (boolean) and "suggestions" (an array of strings, e.g., ["2:30 PM - 3:00 PM"]). If no conflict, the suggestions array should be empty.`;
+                     const payload = {
+                         contents: [{ role: "user", parts: [{ text: prompt }] }],
+                         generationConfig: {
+                             responseMimeType: "application/json",
+                             responseSchema: { type: "OBJECT", properties: { "conflict": { type: "BOOLEAN" }, "suggestions": { type: "ARRAY", items: { type: "STRING" } } }, required: ["conflict", "suggestions"] }
+                         }
+                     };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+                        let scheduleHtml = '';
+                        if (parsedJson.conflict) {
+                            const suggestionsList = parsedJson.suggestions.map(s => `<li class="ml-4 list-disc">${s}</li>`).join('');
+                            scheduleHtml = `<h4>✨ Scheduling Analysis</h4><p class="text-yellow-400">A conflict was detected for ${requestData.time}.</p><p>Suggested alternative slots:</p><ul>${suggestionsList}</ul>`;
+                        } else {
+                            scheduleHtml = `<h4>✨ Scheduling Analysis</h4><p class="text-green-400">No calendar conflicts found for the requested time.</p>`;
+                        }
+                        container.innerHTML = scheduleHtml;
+                    } else { throw new Error('Unexpected schedule response.'); }
+                } catch (error) {
+                    console.error("Schedule check error:", error);
+                    container.innerHTML = `<p class="text-red-500 text-sm">Could not perform schedule check.</p>`;
+                }
+            }
+
+            async function handleGenerateBriefing(e, requestData) {
+                const button = e.currentTarget;
+                button.disabled = true;
+                const container = document.getElementById('prep-briefing-container');
+                container.innerHTML = `<div class="flex items-center mt-2"><div class="loader" style="width:16px; height:16px;"></div><p class="ml-2 text-sm">Generating briefing...</p></div>`;
+
+                try {
+                    const prompt = `A meeting with '${requestData.name}' is set for '${requestData.date}'. Purpose: '${requestData.purpose}'. Generate a concise preparation briefing for the university president. Use markdown for formatting. Include: 1. **Key Objectives**. 2. **Potential Talking Points**. 3. **Required Background Info**. 4. **Suggested Next Steps**.`;
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        let briefingHtml = result.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                        container.innerHTML = `<h4>Meeting Prep Briefing</h4><div class="p-3 bg-gray-100 rounded-md">${briefingHtml}</div>`;
+                    } else { throw new Error('Unexpected briefing response.'); }
+                } catch (error) {
+                    console.error("Briefing generation error:", error);
+                    container.innerHTML = `<p class="text-red-500 text-sm">Could not generate briefing.</p>`;
+                } finally { button.disabled = false; }
+            }
+            
+            async function handleIdentifyStakeholders(e, requestData) {
+                const button = e.currentTarget;
+                button.disabled = true;
+                const container = document.getElementById('stakeholder-container');
+                container.innerHTML = `<div class="flex items-center mt-2"><div class="loader" style="width:16px; height:16px;"></div><p class="ml-2 text-sm">Analyzing stakeholders & delegation...</p></div>`;
+
+                try {
+                    const prompt = `Based on the meeting purpose: "${requestData.purpose}", analyze for stakeholders and delegation. Respond with a JSON object with two keys: "stakeholders" (an array of strings of other key individuals/departments at the University of Hargeisa, e.g., 'Dean of Students') and "delegation" (an object with "possible": boolean, and "suggestion": a string explaining why and to whom it could be delegated, or why it should not be). If none, return empty arrays or suggestions.`;
+                     const payload = {
+                         contents: [{ role: "user", parts: [{ text: prompt }] }],
+                         generationConfig: {
+                             responseMimeType: "application/json",
+                             responseSchema: {
+                                 type: "OBJECT", 
+                                 properties: { 
+                                     "stakeholders": { type: "ARRAY", items: { type: "STRING" } },
+                                     "delegation": { type: "OBJECT", properties: { "possible": { "type": "BOOLEAN" }, "suggestion": { "type": "STRING" } } }
+                                 }, 
+                                 required: ["stakeholders", "delegation"]
+                             }
+                         }
+                     };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+                        let stakeholderHtml = '<h4>Stakeholders & Delegation</h4>';
+                        if(parsedJson.stakeholders && parsedJson.stakeholders.length > 0) {
+                            const stakeholderList = parsedJson.stakeholders.map(s => `<li class="ml-4 list-disc">${s}</li>`).join('');
+                            stakeholderHtml += `<p><strong>Suggested Stakeholders:</strong></p><ul>${stakeholderList}</ul>`;
+                        } else {
+                            stakeholderHtml += `<p>No specific additional stakeholders were identified.</p>`;
+                        }
+                        if (parsedJson.delegation) {
+                            stakeholderHtml += `<p class="mt-2"><strong>Delegation Analysis:</strong> ${parsedJson.delegation.suggestion}</p>`;
+                        }
+                        container.innerHTML = stakeholderHtml;
+                    } else { throw new Error('Unexpected stakeholder response.'); }
+                } catch (error) {
+                    console.error("Stakeholder identification error:", error);
+                    container.innerHTML = `<p class="text-red-500 text-sm">Could not identify stakeholders.</p>`;
+                } finally { button.disabled = false; }
+            }
+
+            async function handleGenerateAgenda(e, requestData) {
+                const button = e.currentTarget;
+                button.disabled = true;
+                const container = document.getElementById('agenda-container');
+                container.innerHTML = `<div class="flex items-center mt-2"><div class="loader" style="width:16px; height:16px;"></div><p class="ml-2 text-sm">Generating agenda...</p></div>`;
+
+                try {
+                    const prompt = `Based on the meeting purpose: "${requestData.purpose}", generate a formal meeting agenda with 3-5 talking points. Use markdown for formatting.`;
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        let agendaHtml = result.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>').replace(/###\s(.*?)(<br>|$)/g, '<h4>$1</h4>').replace(/-\s(.*?)(<br>|$)/g, '<li class="ml-4 list-disc">$1</li>');
+                        container.innerHTML = `<h4>Suggested Meeting Agenda</h4><div class="p-3 bg-gray-100 rounded-md"><ul>${agendaHtml}</ul></div>`;
+                    } else { throw new Error('Unexpected agenda response.'); }
+                } catch (error) {
+                    console.error("Agenda generation error:", error);
+                    container.innerHTML = `<p class="text-red-500 text-sm">Could not generate agenda.</p>`;
+                } finally { button.disabled = false; }
+            }
+
+            function handleFollowUp(requestData) {
+                resetAdminPanel();
+                analysisLoader.classList.add('hidden');
+                analysisPlaceholder.classList.add('hidden');
+                analysisContent.classList.remove('hidden');
+                analysisContent.innerHTML = `
+                    <h4>Draft Follow-up for: ${requestData.name}</h4>
+                    <p class="text-sm text-gray-500">Enter brief notes or key outcomes from the meeting below.</p>
+                    <textarea id="followup-notes" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50 text-gray-900 placeholder-gray-500"></textarea>
+                    <div id="followup-result-container" class="mt-4"></div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="generate-followup-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                            ✨ Generate Follow-up Email
+                        </button>
+                    </div>
+                `;
+                document.getElementById('generate-followup-button').addEventListener('click', (e) => generateFollowUpEmail(e, requestData));
+            }
+
+            async function generateFollowUpEmail(e, requestData) {
+                const button = e.currentTarget;
+                button.disabled = true;
+                const notes = document.getElementById('followup-notes').value;
+                if (notes.trim().length < 10) {
+                    showToast("Please enter some notes first.", "error");
+                    button.disabled = false;
+                    return;
+                }
+                const container = document.getElementById('followup-result-container');
+                container.innerHTML = `<div class="flex items-center mt-2"><div class="loader" style="width:16px; height:16px;"></div><p class="ml-2 text-sm">Generating email...</p></div>`;
+                
+                try {
+                    const prompt = `A meeting was held with ${requestData.name} regarding "${requestData.purpose}". The key notes from the meeting are: "${notes}". Draft a formal, polite follow-up email from the President's office summarizing the discussion and outlining any action items mentioned in the notes.`;
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        let emailHtml = result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+                        container.innerHTML = `<h4>Draft Follow-up Email</h4><div class="p-3 bg-gray-100 rounded-md">${emailHtml}</div>`;
+                    } else { throw new Error('Unexpected follow-up response.'); }
+                } catch(error) {
+                    console.error("Follow-up generation error:", error);
+                    container.innerHTML = `<p class="text-red-500 text-sm">Could not generate follow-up email.</p>`;
+                } finally {
+                    button.disabled = false;
+                }
+            }
+
+            async function updateRequestStatus(newStatus, requestId) {
+                if (!requestId) return;
+                const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${currentDepartment}`;
+                const requestDocRef = doc(db, requestsCollectionPath, requestId);
+                try {
+                    await updateDoc(requestDocRef, { status: newStatus });
+                    // Simulate sending an email
+                    showToast(`Request has been ${newStatus.toLowerCase()}. A notification email has been simulated.`, 'success');
+                    resetAdminPanel();
+                    resetAndFetch(); // Refresh list
+                } catch (error) {
+                    console.error("Error updating status:", error);
+                    showToast("Failed to update status.", "error");
+                }
+            }
+
+            function resetAdminPanel() {
+                analysisContent.classList.add('hidden');
+                analysisContent.innerHTML = '';
+                analysisPlaceholder.classList.remove('hidden');
+                analysisLoader.classList.add('hidden');
+                document.querySelectorAll('#requests-list > div').forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
+            }
+
+            // --- Triage Feature ---
+            document.getElementById('triage-button').addEventListener('click', async () => {
+                const triageButton = document.getElementById('triage-button');
+                const triageButtonText = document.getElementById('triage-button-text');
+                const triageLoader = document.getElementById('triage-loader');
+                triageButtonText.classList.add('hidden');
+                triageLoader.classList.remove('hidden');
+                triageButton.disabled = true;
+                
+                try {
+                    const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${currentDepartment}`;
+                    const q = query(collection(db, requestsCollectionPath), where("status", "==", "Pending"));
+                    const querySnapshot = await getDocs(q);
+                    const pendingRequests = [];
+                    querySnapshot.forEach(doc => {
+                        pendingRequests.push({ id: doc.id, purpose: doc.data().purpose });
+                    });
+
+                    if (pendingRequests.length === 0) {
+                        showToast("No pending requests to triage for this department.", "success");
+                        return;
+                    }
+
+                    const prompt = `You are an executive assistant for a university president. Prioritize these meeting requests. For each request, provide its 'id', a 'priority' ('High', 'Medium', or 'Low'), and brief 'notes' explaining your reasoning. Consider urgency, importance (e.g., strategic partnerships, major student issues), and if it could be delegated. Respond with a JSON object containing a single key "priorities", which is an array of objects. Requests: ${JSON.stringify(pendingRequests)}`;
+
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "OBJECT",
+                                properties: { "priorities": { type: "ARRAY", items: { type: "OBJECT", properties: { "id": { "type": "STRING" }, "priority": { "type": "STRING" }, "notes": { "type": "STRING" } }, required: ["id", "priority", "notes"] } } },
+                                required: ["priorities"]
+                            }
+                        }
+                    };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+                        triageResults.clear();
+                        parsedJson.priorities.forEach(item => {
+                            triageResults.set(item.id, { priority: item.priority, notes: item.notes });
+                        });
+                        
+                        const priorityOrder = { High: 1, Medium: 2, Low: 3 };
+                        allDepartmentRequests.sort((a, b) => {
+                            const priorityA = triageResults.has(a.id) ? priorityOrder[triageResults.get(a.id).priority] : 4;
+                            const priorityB = triageResults.has(b.id) ? priorityOrder[triageResults.get(b.id).priority] : 4;
+                            if (priorityA !== priorityB) return priorityA - priorityB;
+                            return (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0);
+                        });
+                        renderRequests(allDepartmentRequests);
+
+                        showToast("Requests have been triaged by AI!", "success");
+                    } else {
+                        throw new Error("Unexpected triage response structure.");
+                    }
+
+                } catch (error) {
+                    console.error("Triage Error:", error);
+                    showToast("Could not triage requests.", "error");
+                } finally {
+                    triageButtonText.classList.remove('hidden');
+                    triageLoader.classList.add('hidden');
+                    triageButton.disabled = false;
+                }
+            });
+
+            // --- Analytics Modal Logic ---
+            const analyticsModal = document.getElementById('analytics-modal');
+            document.getElementById('show-analytics-modal-button').addEventListener('click', () => {
+                analyticsModal.classList.remove('hidden');
+                analyticsModal.classList.add('flex');
+            });
+            document.getElementById('close-analytics-modal-button').addEventListener('click', () => {
+                analyticsModal.classList.add('hidden');
+                analyticsModal.classList.remove('flex');
+            });
+
+            async function fetchAllRequestsForAnalytics() {
+                const departments = ['president', 'academic', 'finance'];
+                const allRequests = [];
+                for (const dept of departments) {
+                    const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${dept}`;
+                    const q = query(collection(db, requestsCollectionPath));
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach(doc => {
+                        allRequests.push(doc.data());
+                    });
+                }
+                return allRequests;
+            }
+
+            document.getElementById('generate-analytics-button').addEventListener('click', async () => {
+                const analyticsLoader = document.getElementById('analytics-loader');
+                const generateAnalyticsButton = document.getElementById('generate-analytics-button');
+                const analyticsResultsContainer = document.getElementById('analytics-results');
+                
+                analyticsLoader.classList.remove('hidden');
+                generateAnalyticsButton.disabled = true;
+                analyticsResultsContainer.classList.add('hidden');
+
+                try {
+                    const allRequests = await fetchAllRequestsForAnalytics();
+                    if (allRequests.length === 0) {
+                        analyticsResultsContainer.innerHTML = `<p class="text-center text-gray-400">No meetings to analyze.</p>`;
+                        analyticsResultsContainer.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Process data for chart
+                    const monthlyCounts = {};
+                    allRequests.forEach(req => {
+                        const month = new Date(req.createdAt.toDate()).toLocaleString('default', { month: 'long', year: 'numeric' });
+                        monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
+                    });
+                    
+                    const chartLabels = Object.keys(monthlyCounts);
+                    const chartData = Object.values(monthlyCounts);
+
+                    // Process data for topics
+                    const allPurposes = allRequests.map(r => r.purpose);
+                    const prompt = `Analyze the following list of meeting purposes. Identify the main topics, count their occurrences, and provide a brief summary for each topic. Respond with a JSON object containing a single key: "trends" (an array of objects, each with "topic", "count", and "summary"). Meeting Purposes: ${JSON.stringify(allPurposes)}`;
+                    const payload = {
+                        contents: [{ role: "user", parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "OBJECT",
+                                properties: {
+                                    "trends": { type: "ARRAY", items: { type: "OBJECT", properties: { "topic": { "type": "STRING" }, "count": { "type": "NUMBER" }, "summary": { "type": "STRING" } }, required: ["topic", "count", "summary"] } }
+                                },
+                                required: ["trends"]
+                            }
+                        }
+                    };
+                     const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+                        
+                        let topicsHtml = `<div class="p-4 bg-gray-100 rounded-lg"> <h4 class="text-lg font-bold text-gray-900 mb-4">Frequent Request Topics</h4>`;
+                        const totalTopics = parsedJson.trends.reduce((sum, t) => sum + t.count, 0);
+
+                        parsedJson.trends.forEach(trend => {
+                            const percentage = totalTopics > 0 ? ((trend.count / totalTopics) * 100).toFixed(1) : 0;
+                            topicsHtml += `
+                                <div class="mb-3">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-blue-600">${trend.topic}</span>
+                                        <span class="text-sm font-medium text-blue-600">${percentage}%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        topicsHtml += `</div>`;
+                        
+                        const chartHtml = `<div class="p-4 bg-gray-100 rounded-lg"><h4 class="text-lg font-bold text-gray-900 mb-4">Request Volume by Month</h4><canvas id="request-volume-chart"></canvas></div>`;
+
+                        analyticsResultsContainer.innerHTML = chartHtml + topicsHtml;
+                        analyticsResultsContainer.classList.remove('hidden');
+
+                        const ctx = document.getElementById('request-volume-chart').getContext('2d');
+                        if(requestChart) {
+                            requestChart.destroy();
+                        }
+                        requestChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    label: '# of Requests',
+                                    data: chartData,
+                                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderColor: 'rgba(59, 130, 246, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: { y: { beginAtZero: true } }
+                            }
+                        });
+
+
+                    } else { throw new Error("Unexpected analytics response."); }
+
+                } catch(error) {
+                    console.error("Analytics Error:", error);
+                    analyticsResultsContainer.innerHTML = `<p class="text-center text-red-500">Could not generate analytics report.</p>`;
+                    analyticsResultsContainer.classList.remove('hidden');
+                } finally {
+                    analyticsLoader.classList.add('hidden');
+                    generateAnalyticsButton.disabled = false;
+                }
+            });
+            
+            // --- Status Check Logic ---
+            document.getElementById('status-check-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('status-check-email').value;
+                if (!email) {
+                    showToast('Please enter an email address.', 'error');
+                    return;
+                }
+                
+                const statusCheckButton = document.getElementById('status-check-button');
+                const statusCheckButtonText = document.getElementById('status-check-button-text');
+                const statusCheckLoader = document.getElementById('status-check-loader');
+                const statusResultsContainer = document.getElementById('status-results-container');
+                const noStatusFound = document.getElementById('no-status-found');
+
+                statusCheckButtonText.classList.add('hidden');
+                statusCheckLoader.classList.remove('hidden');
+                statusCheckButton.disabled = true;
+                statusResultsContainer.innerHTML = '';
+                noStatusFound.classList.add('hidden');
+
+                try {
+                    const departments = ['president', 'academic', 'finance'];
+                    let userRequests = [];
+
+                    for (const dept of departments) {
+                        const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${dept}`;
+                        const q = query(collection(db, requestsCollectionPath), where("email", "==", email));
+                        const querySnapshot = await getDocs(q);
+                        querySnapshot.forEach(doc => {
+                            userRequests.push({ department: dept, ...doc.data() });
+                        });
+                    }
+
+                    if (userRequests.length === 0) {
+                        noStatusFound.classList.remove('hidden');
+                    } else {
+                        let resultsHtml = '<div class="space-y-4">';
+                        userRequests.forEach(req => {
+                            const statusColors = {
+                                Pending: 'text-yellow-800 bg-yellow-100',
+                                Accepted: 'text-green-800 bg-green-100',
+                                Rejected: 'text-red-800 bg-red-100',
+                                Completed: 'text-blue-800 bg-blue-100'
+                            };
+                            const deptName = req.department.charAt(0).toUpperCase() + req.department.slice(1);
+                            resultsHtml += `
+                                <div class="bg-white p-4 rounded-lg">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-semibold text-gray-900">Request for ${deptName}'s Office</p>
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full ${statusColors[req.status] || ''}">${req.status}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-2"><strong>Date:</strong> ${req.date}</p>
+                                    ${req.phone ? `<p class="text-sm text-gray-600"><strong>Phone:</strong> ${req.phone}</p>` : ''}
+                                    <p class="text-sm text-gray-600"><strong>Purpose:</strong> ${req.purpose.substring(0, 100)}...</p>
+                                </div>
+                            `;
+                        });
+                        resultsHtml += '</div>';
+                        statusResultsContainer.innerHTML = resultsHtml;
+                    }
+                } catch (error) {
+                    console.error("Error checking status:", error);
+                    showToast("Could not check status. Please try again.", "error");
+                    statusResultsContainer.innerHTML = `<p class="text-center text-red-500">An error occurred while fetching your requests.</p>`;
+                } finally {
+                    statusCheckButtonText.classList.remove('hidden');
+                    statusCheckLoader.classList.add('hidden');
+                    statusCheckButton.disabled = false;
+                }
+            });
+
+
+            // --- Typewriter effect ---
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const heroButtons = document.getElementById('hero-buttons');
+
+            const titleText = "Leadership Booking Portal";
+            const subtitleText = "Welcome. This platform allows students, staff, and official guests to request a meeting with the University Leadership.";
+
+            function typeWriter(element, text, speed, callback) {
+                let i = 0;
+                element.innerHTML = '';
+                let cursor = document.createElement('span');
+                cursor.className = 'typewriter-cursor';
+                element.appendChild(cursor);
+
+                function type() {
+                    if (i < text.length) {
+                        element.insertBefore(document.createTextNode(text.charAt(i)), cursor);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        cursor.style.animation = 'none'; // Stop blinking
+                        cursor.style.display = 'none';
+                        if (callback) callback();
+                    }
+                }
+                type();
+            }
+
+            heroSubtitle.textContent = subtitleText;
+            heroSubtitle.classList.add('opacity-0');
+
+            typeWriter(heroTitle, titleText, 100, () => {
+                heroSubtitle.classList.remove('opacity-0');
+                heroButtons.classList.remove('opacity-0');
+            });
+
+            // --- Scroll Animation Observer ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Populate Leadership Section ---
+            const leadershipContainer = document.getElementById('leadership-container');
+            Object.values(leadershipData).forEach(leader => {
+                const card = document.createElement('div');
+                card.className = 'bg-white text-center p-8 rounded-xl transform hover:scale-105 transition-transform duration-300 shadow-lg';
+                card.innerHTML = `
+                    <img class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-blue-500/50" src="${leader.photoUrl}" alt="${leader.name}">
+                    <h3 class="text-xl font-bold text-gray-900">${leader.name}</h3>
+                    <p class="text-blue-600 font-medium">${leader.title}</p>
+                    <p class="mt-4 text-gray-600 text-sm">${leader.bio}</p>
+                `;
+                leadershipContainer.appendChild(card);
+            });
+            
+            // --- Dashboard Stats ---
+            async function updateDashboardStats() {
+                const departments = ['president', 'academic', 'finance'];
+                let appointmentsToday = 0;
+                let pending = 0;
+                let approved = 0;
+                let rejected = 0;
+                
+                const today = new Date().toISOString().split('T')[0];
+
+                for (const dept of departments) {
+                    const requestsCollectionPath = `/artifacts/${appId}/public/data/requests_${dept}`;
+                    const q = query(collection(db, requestsCollectionPath));
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach(doc => {
+                        const request = doc.data();
+                        if (request.status === 'Accepted' && request.date === today) {
+                            appointmentsToday++;
+                        }
+                        if (request.status === 'Pending') {
+                            pending++;
+                        }
+                        if (request.status === 'Accepted') {
+                            approved++;
+                        }
+                        if (request.status === 'Rejected') {
+                            rejected++;
+                        }
+                    });
+                }
+
+                document.getElementById('stats-today').textContent = appointmentsToday;
+                document.getElementById('stats-pending').textContent = pending;
+                document.getElementById('stats-approved').textContent = approved;
+                document.getElementById('stats-rejected').textContent = rejected;
+            }
+
+            // --- AI Chatbot Logic ---
+            const chatButton = document.getElementById('ai-chat-button');
+            const chatWidget = document.getElementById('ai-chat-widget');
+            const closeChatButton = document.getElementById('close-chat-button');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatForm = document.getElementById('chat-form');
+            const chatInput = document.getElementById('chat-input');
+            const typingIndicator = document.getElementById('chat-typing-indicator');
+            let chatHistory = [];
+
+            chatButton.addEventListener('click', () => {
+                chatWidget.classList.toggle('hidden');
+                chatWidget.classList.toggle('flex');
+                if(!chatWidget.classList.contains('hidden') && chatMessages.children.length === 0) {
+                    addMessageToChat('assistant', 'Hello! I\'m the HargeisaU AI Assistant. How can I help you with your appointment booking today?');
+                }
+            });
+
+            closeChatButton.addEventListener('click', () => {
+                chatWidget.classList.add('hidden');
+                chatWidget.classList.remove('flex');
+            });
+
+            function addMessageToChat(sender, message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = `chat-message max-w-xs rounded-lg p-3 text-white ${sender}`;
+                messageElement.textContent = message;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const userMessage = chatInput.value.trim();
+                if (!userMessage) return;
+
+                addMessageToChat('user', userMessage);
+                chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+                chatInput.value = '';
+                typingIndicator.classList.remove('hidden');
+
+                try {
+                    const prompt = `You are a helpful AI assistant for the University of Hargeisa's appointment booking portal. Your goal is to answer user questions about the booking process, who to contact for specific issues, and general university information. Keep your answers concise and helpful. Here is the conversation history: ${JSON.stringify(chatHistory)}. The user's latest question is: "${userMessage}"`;
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    
+                    const result = await response.json();
+                    
+                    typingIndicator.classList.add('hidden');
+                    
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const assistantMessage = result.candidates[0].content.parts[0].text;
+                        addMessageToChat('assistant', assistantMessage);
+                        chatHistory.push({ role: "model", parts: [{ text: assistantMessage }] });
+                    } else {
+                        addMessageToChat('assistant', 'I\'m sorry, I couldn\'t process that. Please try again.');
+                    }
+                } catch (error) {
+                    console.error("Chatbot Error:", error);
+                    typingIndicator.classList.add('hidden');
+                    addMessageToChat('assistant', 'I\'m having trouble connecting right now. Please try again later.');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
